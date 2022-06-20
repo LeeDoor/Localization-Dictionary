@@ -18,14 +18,35 @@ namespace Localization_Dictionary
         /// </summary>
         private Dictionary<int, List<string>> dictionary = new Dictionary<int, List<string>>();
 
+        /// <summary>
+        /// list of able languages
+        /// i used hashset, because you cant add 2 same languages
+        /// </summary>
         private HashSet<string> languages = new HashSet<string>();
 
+        /// <summary>
+        /// parametrical constructor
+        /// you cant create dictionary without list of languages
+        /// </summary>
+        /// <param name="Languages">list of languages</param>
         public LocDictionary(HashSet<string> Languages)
         {
             languages = Languages;
         }
+
+        /// <summary>
+        /// function adds key and list of words
+        /// 2 overloads
+        /// </summary>
+        /// <param name="key"> primary key</param>
+        /// <param name="value">list of words</param>
         public void AddKey(int key, List<string> value)
         {
+            if (dictionary.ContainsKey(key))
+            {
+                Console.WriteLine("you already have this key");
+                return;
+            }
             if (value == null) {
                 Console.WriteLine("value is null!");
                 return;
@@ -36,17 +57,31 @@ namespace Localization_Dictionary
             }
         }
 
+        /// <summary>
+        /// function adds key and list of words
+        /// second overload without key
+        /// key creates randomly
+        /// </summary>
+        /// <param name="value">list of words</param>
         public void AddKey(List<string> value)
         {
             int key = GenerateKey();
             AddKey(key, value);
         }
 
+        /// <summary>
+        /// generates key which equals last key of dictionary plus one
+        /// </summary>
+        /// <returns>returns int key</returns>
         private int GenerateKey()
         {
             int last = dictionary.LastOrDefault().Key;
             return last + 1;
         }
+
+        /// <summary>
+        /// prints whole dictionary in console
+        /// </summary>
         public void Show()
         {
             Console.Write("keys\t");
@@ -54,49 +89,56 @@ namespace Localization_Dictionary
             foreach (string language in languages)
             {
                 if (counter++ % 2 == 0)
-                {
-                    setEvenColoumn();
-                }
+                    SetEvenColoumn();
                 else
-                {
-                    setOddColoumn();
-                }
+                    SetOddColoumn();
+
                 Console.Write(language + "\t");
             }
 
             Console.WriteLine();
             foreach (var pair in dictionary)
             {
-                ShowLine(pair);
+                ShowLineWithKey(pair.Key);
             }
         }
-        public void ShowLine(KeyValuePair<int, List<string>> pair)
+
+        /// <summary>
+        /// prints info about one key in console
+        /// </summary>
+        /// <param name="pair">one line</param>
+        public void ShowLineWithKey(int key)
         {
             Console.WriteLine();
-            Console.Write(pair.Key + "\t");
+            Console.Write(key + "\t");
+
+            List<string> words = dictionary[key];
             
-            for(int i = 0; i < pair.Value.Count; i++)
+            for(int i = 0; i < words.Count; i++)
             {
                 if (i % 2 == 0)
-                {
-                    setEvenColoumn();
-                }
+                    SetEvenColoumn();
                 else
-                {
-                    setOddColoumn();
-                }
+                    SetOddColoumn();
 
-                Console.Write(pair.Value[i] + "\t");
+                Console.Write(words[i] + "\t");
             }
-            setOddColoumn();
+            SetOddColoumn();
         }
 
-        private void setEvenColoumn()
+        /// <summary>
+        /// colors console in black-white colors
+        /// </summary>
+        private void SetEvenColoumn()
         {
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
         }
-        private void setOddColoumn()
+
+        /// <summary>
+        /// colors console in white-black colors
+        /// </summary>
+        private void SetOddColoumn()
         {
 
             Console.BackgroundColor = ConsoleColor.Black;
