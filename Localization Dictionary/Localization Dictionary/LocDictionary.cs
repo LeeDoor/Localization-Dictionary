@@ -44,17 +44,44 @@ namespace Localization_Dictionary
         {
             if (dictionary.ContainsKey(key))
             {
+                SetErrorString();
                 Console.WriteLine("you already have this key");
+                SetOddColoumn();
                 return;
             }
-            if (value == null) {
-                Console.WriteLine("value is null!");
-                return;
-            }
-            if (value.Count == languages.Count)
+            if (value == null)
             {
-                dictionary.Add(key, value);
+                SetErrorString();
+                Console.WriteLine("value is null!");
+                SetOddColoumn();
+                return;
             }
+            if (value.Count != languages.Count)
+            {
+                if(value.Count > languages.Count)
+                {
+                    SetErrorString();
+                    Console.WriteLine("not enough words in word list. exess words will be removed");
+                    SetOddColoumn();
+
+                    while (value.Count != languages.Count)
+                    {
+                        value.Remove(value.Last());
+                    }
+                }
+                else if (value.Count < languages.Count)
+                {
+                    SetErrorString();
+                    Console.WriteLine("not enough words in word list. needed words will be added");
+                    SetOddColoumn();
+
+                    while (value.Count != languages.Count)
+                    {
+                        value.Add("empty");
+                    }
+                }
+            }
+            dictionary.Add(key, value);
         }
 
         /// <summary>
@@ -89,49 +116,47 @@ namespace Localization_Dictionary
             {
                 ShowLine(pair.Key);
             }
+            Console.WriteLine();
         }
 
         public void Show(int key)
         {
             ShowHead();
             ShowLine(key);
+            Console.WriteLine();
         }
         public void Show(string subword)
         {
             ShowHead();
             ShowLine(subword);
+            Console.WriteLine();
         }
 
         private void ShowHead()
         {
+            SetHead();
             Console.Write("keys\t");
-            int counter = 0;
             foreach (string language in languages)
             {
-                if (counter++ % 2 == 0)
-                    SetEvenColoumn();
-                else
-                    SetOddColoumn();
-
                 Console.Write(language + "\t");
             }
             Console.WriteLine();
+            SetOddColoumn();
         }
 
         private void ShowLine(string word)
         {
             foreach(var pair in dictionary)
             {
-                foreach(var curWord in pair.Value)
+                if (pair.Value.Contains(word))
                 {
-                    if(curWord == word)
-                    {
-                        ShowLine(pair.Key);
-                        return;
-                    }
+                    ShowLine(pair.Key);
+                    return;
                 }
             }
+            SetErrorString();
             Console.WriteLine("word not found");
+            SetOddColoumn();
         }
 
         /// <summary>
@@ -140,29 +165,35 @@ namespace Localization_Dictionary
         /// <param name="pair">one line</param>
         private void ShowLine(int key)
         {
-            Console.WriteLine();
-            Console.Write(key + "\t");
-
             if (!dictionary.ContainsKey(key))
             {
-                Console.WriteLine("dictionary doesnt contain this key");
+                SetErrorString();
+                Console.WriteLine("dictionary does not contain this key");
+                SetOddColoumn();
                 return;
             }
+            Console.Write(key + "\t");
             List<string> words = dictionary[key];
             
             for(int i = 0; i < words.Count; i++)
             {
-                if (i % 2 == 0)
-                    SetEvenColoumn();
+                if (words[i] == "empty")
+                {
+                    SetNullString();
+                }
                 else
-                    SetOddColoumn();
+                {
+                    if (i % 2 == 0)
+                        SetEvenColoumn();
+                    else
+                        SetOddColoumn();
+                }
 
                 Console.Write(words[i] + "\t");
             }
             SetOddColoumn();
+            Console.WriteLine();
         }
-
-
 
         /// <summary>
         /// colors console in black-white colors
@@ -178,9 +209,24 @@ namespace Localization_Dictionary
         /// </summary>
         private void SetOddColoumn()
         {
-
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
         }
+        private void SetErrorString()
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Red;
+        }
+        private void SetNullString()
+        {
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Black;
+        }
+        private void SetHead()
+        {
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.Black;
+        }
     }
 }
+
