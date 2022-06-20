@@ -84,6 +84,26 @@ namespace Localization_Dictionary
         /// </summary>
         public void Show()
         {
+            ShowHead();
+            foreach (var pair in dictionary)
+            {
+                ShowLine(pair.Key);
+            }
+        }
+
+        public void Show(int key)
+        {
+            ShowHead();
+            ShowLine(key);
+        }
+        public void Show(string subword)
+        {
+            ShowHead();
+            ShowLine(subword);
+        }
+
+        private void ShowHead()
+        {
             Console.Write("keys\t");
             int counter = 0;
             foreach (string language in languages)
@@ -95,23 +115,39 @@ namespace Localization_Dictionary
 
                 Console.Write(language + "\t");
             }
-
             Console.WriteLine();
-            foreach (var pair in dictionary)
+        }
+
+        private void ShowLine(string word)
+        {
+            foreach(var pair in dictionary)
             {
-                ShowLineWithKey(pair.Key);
+                foreach(var curWord in pair.Value)
+                {
+                    if(curWord == word)
+                    {
+                        ShowLine(pair.Key);
+                        return;
+                    }
+                }
             }
+            Console.WriteLine("word not found");
         }
 
         /// <summary>
         /// prints info about one key in console
         /// </summary>
         /// <param name="pair">one line</param>
-        public void ShowLineWithKey(int key)
+        private void ShowLine(int key)
         {
             Console.WriteLine();
             Console.Write(key + "\t");
 
+            if (!dictionary.ContainsKey(key))
+            {
+                Console.WriteLine("dictionary doesnt contain this key");
+                return;
+            }
             List<string> words = dictionary[key];
             
             for(int i = 0; i < words.Count; i++)
@@ -125,6 +161,8 @@ namespace Localization_Dictionary
             }
             SetOddColoumn();
         }
+
+
 
         /// <summary>
         /// colors console in black-white colors
