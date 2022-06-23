@@ -13,6 +13,7 @@ public static class Program
         dictionary.AddKey(new List<string> { "apple", "яблоко", "appol", "apfel" });
         dictionary.AddKey(new List<string> { "tank", "танк", "tank", "panzerkampfagen"});
         dictionary.AddKey(new List<string> { "whater", "вода", "whetter" });
+        dictionary.AddKey(new List<string> { "qwe", "eqw", "whater" });
         dictionary.AddKey(new List<string> { "fire", "огонь", "fiyor", "keinejuden", "WAGAWAGA" });
         dictionary.Show();
         Console.WriteLine();
@@ -22,5 +23,7 @@ public static class Program
         dictionary.Show("whater");
         dictionary.Show("fiyor");
         dictionary.Show("GOVNOVOZ");
+        dictionary.ChangeTranslation(1, "russian", "ТАНК СУКА");
+        dictionary.Show();
     }
 }

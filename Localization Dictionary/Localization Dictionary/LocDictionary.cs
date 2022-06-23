@@ -42,16 +42,19 @@ namespace Localization_Dictionary
         /// <param name="value">list of words</param>
         public void AddKey(int key, List<string> value)
         {
+            // dublicate key check
             if (dictionary.ContainsKey(key))
             {
                 ConsoleColor.WriteError("you already have this key");
                 return;
             }
+            // null value check
             if (value == null)
             {
                 ConsoleColor.WriteError("value is null!");
                 return;
             }
+            // wrong value length
             if (value.Count != languages.Count)
             {
                 if(value.Count > languages.Count)
@@ -109,12 +112,21 @@ namespace Localization_Dictionary
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// prints line of dictionary with given key
+        /// </summary>
+        /// <param name="key">dictionary key</param>
         public void Show(int key)
         {
             ShowHead();
             ShowLine(key);
             Console.WriteLine();
         }
+
+        /// <summary>
+        /// prints lines with given subword
+        /// </summary>
+        /// <param name="subword">subword of dictionary</param>
         public void Show(string subword)
         {
             ShowHead();
@@ -122,6 +134,9 @@ namespace Localization_Dictionary
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// shows languages of dictionary
+        /// </summary>
         private void ShowHead()
         {
             ConsoleColor.SetHead();
@@ -134,17 +149,22 @@ namespace Localization_Dictionary
             ConsoleColor.SetOddColoumn();
         }
 
+        /// <summary>
+        /// prints every line with given subword
+        /// </summary>
+        /// <param name="word"></param>
         private void ShowLine(string word)
         {
-            foreach(var pair in dictionary)
+            var dic = dictionary.Where(n => n.Value.Contains(word)).ToList();
+            if(dic.Count == 0)
             {
-                if (pair.Value.Contains(word))
-                {
-                    ShowLine(pair.Key);
-                    return;
-                }
+                ConsoleColor.WriteError("word not found");
             }
-            ConsoleColor.WriteError("word not found");
+
+            foreach (var pair in dic)
+            {
+                ShowLine(pair.Key);
+            }
         }
 
         /// <summary>
@@ -153,15 +173,17 @@ namespace Localization_Dictionary
         /// <param name="pair">one line</param>
         private void ShowLine(int key)
         {
+            // if you havent this key leave
             if (!dictionary.ContainsKey(key))
             {
                 ConsoleColor.WriteError("dictionary does not contain this key");
                 return;
             }
+
             Console.Write(key + "\t");
             List<string> words = dictionary[key];
-            
-            for(int i = 0; i < words.Count; i++)
+            string printingWord; 
+            for (int i = 0; i < words.Count; i++)
             {
                 if (words[i] == "empty")
                 {
@@ -174,11 +196,40 @@ namespace Localization_Dictionary
                     else
                         ConsoleColor.SetOddColoumn();
                 }
-
-                Console.Write(words[i] + "\t");
+                printingWord = words[i];
+                Console.Write(printingWord);
+                (int left, int top) = Console.GetCursorPosition();
+                Console.SetCursorPosition(left + GetMaxWordSize(i) - printingWord.Length + 3, top);
             }
             ConsoleColor.SetOddColoumn();
             Console.WriteLine();
+        }
+
+        /// <summary>
+        /// prints size in chars of the longest word in coloumn
+        /// </summary>
+        /// <param name="language">language of given coloumn</param>
+        /// <returns></returns>
+        private int GetMaxWordSize(int coloumn)
+        {
+            return dictionary.Max(n => n.Value[coloumn].Length);
+        }
+
+        /// <summary>
+        /// changes one translation word of key
+        /// </summary>
+        /// <param name="key">needed word</param>
+        /// <param name="language">needed language</param>
+        /// <param name="newWord"> new word</param>
+        public void ChangeTranslation(int key, string language, string newWord)
+        {
+            if (language == null 
+                || newWord == null 
+                || !dictionary.ContainsKey(key) 
+                || !languages.Contains(language)) 
+                return;
+
+            dictionary[key][languages.ToList().FindLastIndex(n => n == language)] = newWord;
         }
     }
 }
