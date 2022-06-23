@@ -5,25 +5,27 @@ public static class Program
     public static void Main()
     {
         LocDictionary dictionary = new LocDictionary(new HashSet<string> { 
-            "english",
-            "russian", 
-            "spanish", 
-            "nazy" 
+            "english"
         });
-        dictionary.AddKey(new List<string> { "apple", "яблоко", "appol", "apfel" });
-        dictionary.AddKey(new List<string> { "tank", "танк", "tank", "panzerkampfagen"});
-        dictionary.AddKey(new List<string> { "whater", "вода", "whetter" });
-        dictionary.AddKey(new List<string> { "qwe", "eqw", "whater" });
-        dictionary.AddKey(new List<string> { "fire", "огонь", "fiyor", "keinejuden", "WAGAWAGA" });
-        dictionary.Show();
-        Console.WriteLine();
-        dictionary.Show(1);
-        dictionary.Show(2);
-        dictionary.Show(8);
-        dictionary.Show("whater");
-        dictionary.Show("fiyor");
-        dictionary.Show("GOVNOVOZ");
-        dictionary.ChangeTranslation(1, "russian", "ТАНК СУКА");
-        dictionary.Show();
+        dictionary.AddKey(0, new List<string> { "apple" });
+        dictionary.AddKey(1, new List<string> { "tank"});
+        dictionary.AddKey(2, new List<string> { "whater" });
+        dictionary.AddKey(3, new List<string> { "grass" });
+        dictionary.AddKey(4, new List<string> { "fire" });
+        dictionary.AddKey(5, new List<string> { "eaculation" });
+
+        LocDictionary dictionary2 = new LocDictionary(new HashSet<string> {
+            "russian"
+        });
+        dictionary2.AddKey(0, new List<string> { "яблоко" });
+        dictionary2.AddKey(1, new List<string> { "танк" });
+        dictionary2.AddKey(2, new List<string> { "вода" });
+        dictionary2.AddKey(3, new List<string> { "земля" });
+        dictionary2.AddKey(4, new List<string> { "огонь" });
+        dictionary2.AddKey(6, new List<string> { "инициализация" });
+
+        var a = dictionary + dictionary2;
+        a.Show();
+
     }
 }

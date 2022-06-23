@@ -57,7 +57,7 @@ namespace Localization_Dictionary
             // wrong value length
             if (value.Count != languages.Count)
             {
-                if(value.Count > languages.Count)
+                if (value.Count > languages.Count)
                 {
                     ConsoleColor.WriteError("not enough words in word list. exess words will be removed");
                     while (value.Count != languages.Count)
@@ -75,28 +75,6 @@ namespace Localization_Dictionary
                 }
             }
             dictionary.Add(key, value);
-        }
-
-        /// <summary>
-        /// function adds key and list of words
-        /// second overload without key
-        /// key creates randomly
-        /// </summary>
-        /// <param name="value">list of words</param>
-        public void AddKey(List<string> value)
-        {
-            int key = GenerateKey();
-            AddKey(key, value);
-        }
-
-        /// <summary>
-        /// generates key which equals last key of dictionary plus one
-        /// </summary>
-        /// <returns>returns int key</returns>
-        private int GenerateKey()
-        {
-            int last = dictionary.LastOrDefault().Key;
-            return last + 1;
         }
 
         /// <summary>
@@ -141,9 +119,14 @@ namespace Localization_Dictionary
         {
             ConsoleColor.SetHead();
             Console.Write("keys\t");
+            string printingWord;
             foreach (string language in languages)
             {
-                Console.Write(language + "\t");
+                printingWord = language;
+                Console.Write(printingWord);
+                (int left, int top) = Console.GetCursorPosition();
+                Console.SetCursorPosition(left + GetMaxWordSize(language) - printingWord.Length + 3, top);
+
             }
             Console.WriteLine();
             ConsoleColor.SetOddColoumn();
@@ -156,7 +139,7 @@ namespace Localization_Dictionary
         private void ShowLine(string word)
         {
             var dic = dictionary.Where(n => n.Value.Contains(word)).ToList();
-            if(dic.Count == 0)
+            if (dic.Count == 0)
             {
                 ConsoleColor.WriteError("word not found");
             }
@@ -182,7 +165,7 @@ namespace Localization_Dictionary
 
             Console.Write(key + "\t");
             List<string> words = dictionary[key];
-            string printingWord; 
+            string printingWord;
             for (int i = 0; i < words.Count; i++)
             {
                 if (words[i] == "empty")
@@ -198,6 +181,8 @@ namespace Localization_Dictionary
                 }
                 printingWord = words[i];
                 Console.Write(printingWord);
+
+
                 (int left, int top) = Console.GetCursorPosition();
                 Console.SetCursorPosition(left + GetMaxWordSize(i) - printingWord.Length + 3, top);
             }
@@ -212,7 +197,12 @@ namespace Localization_Dictionary
         /// <returns></returns>
         private int GetMaxWordSize(int coloumn)
         {
-            return dictionary.Max(n => n.Value[coloumn].Length);
+            int maxTranslationWord = dictionary.Max(n => n.Value[coloumn].Length);
+            if (maxTranslationWord > languages.ElementAt(coloumn).Length)
+            {
+                return maxTranslationWord;
+            }
+            return languages.ElementAt(coloumn).Length;
         }
 
         /// <summary>
@@ -223,13 +213,92 @@ namespace Localization_Dictionary
         /// <param name="newWord"> new word</param>
         public void ChangeTranslation(int key, string language, string newWord)
         {
-            if (language == null 
-                || newWord == null 
-                || !dictionary.ContainsKey(key) 
-                || !languages.Contains(language)) 
+            if (language == null
+                || newWord == null
+                || !dictionary.ContainsKey(key)
+                || !languages.Contains(language))
                 return;
 
             dictionary[key][languages.ToList().FindLastIndex(n => n == language)] = newWord;
+        }
+
+        /// <summary>
+        /// prints size in chars of the longest word in coloumn
+        /// </summary>
+        /// <param name="language">id of given coloumn</param>
+        /// <returns></returns>
+        private int GetMaxWordSize(string language)
+        {
+            int languageId = languages.ToList().FindLastIndex(n => n == language);
+            int maxTranslationWord = dictionary.Max(n => n.Value[languageId].Length);
+            int languageLength = languages.ElementAt(languageId).Length;
+            if (maxTranslationWord > languageLength)
+            {
+                return maxTranslationWord;
+            }
+            return languageLength;
+        }
+
+        private static HashSet<string> CompareLanguages(HashSet<string> h1, HashSet<string> h2)
+        {
+
+            HashSet<string> newLangs = new HashSet<string>();
+            foreach (var lan in h1)
+            {
+                newLangs.Add(lan);
+            }
+            foreach (var lan in h2)
+            {
+                newLangs.Add(lan);
+            }
+            return newLangs;
+        }
+
+        public static LocDictionary operator + (LocDictionary dic1, LocDictionary dic2)
+        {
+            HashSet<string> newLangs = CompareLanguages(dic1.languages, dic2.languages);
+
+            LocDictionary res = new LocDictionary(newLangs);
+
+            foreach(var pair in dic1.dictionary)
+            {
+                if (dic2.dictionary.ContainsKey(pair.Key))
+                {
+                    var newWords = new List<string>();
+                    foreach (var word in dic1.dictionary[pair.Key])
+                    {
+                        newWords.Add(word);
+                    }
+                    foreach (var word in dic2.dictionary[pair.Key])
+                    {
+                        newWords.Add(word);
+                    }
+
+                    res.AddKey(pair.Key, newWords);
+                }
+                else
+                {
+                    res.AddKey(pair.Key, pair.Value);
+                }
+            }
+            foreach (var pair in dic2.dictionary)
+            {
+                if (!dic1.dictionary.ContainsKey(pair.Key))
+                {
+                    List<string> newWords = new();
+                    for(int i = 0; i < dic1.languages.Count; i++)
+                    {
+                        newWords.Add("empty");
+                    }
+                    foreach(var word in dic2.dictionary[pair.Key])
+                    {
+                        newWords.Add(word);
+                    }
+                    res.AddKey(pair.Key, newWords);
+                }
+            }
+
+            return res;
         }
     }
 }
