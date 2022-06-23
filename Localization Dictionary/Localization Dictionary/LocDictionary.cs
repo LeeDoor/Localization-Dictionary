@@ -239,6 +239,12 @@ namespace Localization_Dictionary
             return languageLength;
         }
 
+        /// <summary>
+        /// function connects two lists of languages in one. needed bc languages are the hashsets
+        /// </summary>
+        /// <param name="h1">first list of languages</param>
+        /// <param name="h2">second list of languages</param>
+        /// <returns>returns connected languages</returns>
         private static HashSet<string> CompareLanguages(HashSet<string> h1, HashSet<string> h2)
         {
 
@@ -254,6 +260,12 @@ namespace Localization_Dictionary
             return newLangs;
         }
 
+        /// <summary>
+        /// overrided operator to connect two dictionaries in one
+        /// </summary>
+        /// <param name="dic1">first dictionary</param>
+        /// <param name="dic2">second dictionary</param>
+        /// <returns>returns connected dictionary</returns>
         public static LocDictionary operator + (LocDictionary dic1, LocDictionary dic2)
         {
             HashSet<string> newLangs = CompareLanguages(dic1.languages, dic2.languages);
@@ -299,6 +311,27 @@ namespace Localization_Dictionary
             }
 
             return res;
+        }
+
+        /// <summary>
+        /// orders dictionary using language coloumn name
+        /// </summary>
+        /// <param name="language">name of language</param>
+        public void OrderByLanguage(string language)
+        {
+            OrderByLanguage(languages.ToList().FindLastIndex(n => n == language));
+        }
+
+        /// <summary>
+        /// orders dictionary using id coloumn name
+        /// </summary>
+        /// <param name="coloumn">id of coloumn</param>
+        public void OrderByLanguage(int coloumn)
+        {
+            if (0 <= coloumn && coloumn < languages.Count)
+                dictionary = dictionary.OrderBy(n => n.Value[coloumn]).ToDictionary(n=>n.Key, n=>n.Value);
+            else 
+                ConsoleColor.WriteError("no such language or coloumn to order by");
         }
     }
 }

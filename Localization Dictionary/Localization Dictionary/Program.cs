@@ -26,6 +26,9 @@ public static class Program
 
         var a = dictionary + dictionary2;
         a.Show();
-
+        a.OrderByLanguage("english");
+        a.Show();
+        a.OrderByLanguage("russian");
+        a.Show();
     }
 }
