@@ -44,26 +44,19 @@ namespace Localization_Dictionary
         {
             if (dictionary.ContainsKey(key))
             {
-                SetErrorString();
-                Console.WriteLine("you already have this key");
-                SetOddColoumn();
+                ConsoleColor.WriteError("you already have this key");
                 return;
             }
             if (value == null)
             {
-                SetErrorString();
-                Console.WriteLine("value is null!");
-                SetOddColoumn();
+                ConsoleColor.WriteError("value is null!");
                 return;
             }
             if (value.Count != languages.Count)
             {
                 if(value.Count > languages.Count)
                 {
-                    SetErrorString();
-                    Console.WriteLine("not enough words in word list. exess words will be removed");
-                    SetOddColoumn();
-
+                    ConsoleColor.WriteError("not enough words in word list. exess words will be removed");
                     while (value.Count != languages.Count)
                     {
                         value.Remove(value.Last());
@@ -71,10 +64,7 @@ namespace Localization_Dictionary
                 }
                 else if (value.Count < languages.Count)
                 {
-                    SetErrorString();
-                    Console.WriteLine("not enough words in word list. needed words will be added");
-                    SetOddColoumn();
-
+                    ConsoleColor.WriteError("not enough words in word list. needed words will be added");
                     while (value.Count != languages.Count)
                     {
                         value.Add("empty");
@@ -134,14 +124,14 @@ namespace Localization_Dictionary
 
         private void ShowHead()
         {
-            SetHead();
+            ConsoleColor.SetHead();
             Console.Write("keys\t");
             foreach (string language in languages)
             {
                 Console.Write(language + "\t");
             }
             Console.WriteLine();
-            SetOddColoumn();
+            ConsoleColor.SetOddColoumn();
         }
 
         private void ShowLine(string word)
@@ -154,9 +144,7 @@ namespace Localization_Dictionary
                     return;
                 }
             }
-            SetErrorString();
-            Console.WriteLine("word not found");
-            SetOddColoumn();
+            ConsoleColor.WriteError("word not found");
         }
 
         /// <summary>
@@ -167,9 +155,7 @@ namespace Localization_Dictionary
         {
             if (!dictionary.ContainsKey(key))
             {
-                SetErrorString();
-                Console.WriteLine("dictionary does not contain this key");
-                SetOddColoumn();
+                ConsoleColor.WriteError("dictionary does not contain this key");
                 return;
             }
             Console.Write(key + "\t");
@@ -179,53 +165,20 @@ namespace Localization_Dictionary
             {
                 if (words[i] == "empty")
                 {
-                    SetNullString();
+                    ConsoleColor.SetNullString();
                 }
                 else
                 {
                     if (i % 2 == 0)
-                        SetEvenColoumn();
+                        ConsoleColor.SetEvenColoumn();
                     else
-                        SetOddColoumn();
+                        ConsoleColor.SetOddColoumn();
                 }
 
                 Console.Write(words[i] + "\t");
             }
-            SetOddColoumn();
+            ConsoleColor.SetOddColoumn();
             Console.WriteLine();
-        }
-
-        /// <summary>
-        /// colors console in black-white colors
-        /// </summary>
-        private void SetEvenColoumn()
-        {
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
-        }
-
-        /// <summary>
-        /// colors console in white-black colors
-        /// </summary>
-        private void SetOddColoumn()
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-        private void SetErrorString()
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.Red;
-        }
-        private void SetNullString()
-        {
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.ForegroundColor = ConsoleColor.Black;
-        }
-        private void SetHead()
-        {
-            Console.BackgroundColor = ConsoleColor.Gray;
-            Console.ForegroundColor = ConsoleColor.Black;
         }
     }
 }
