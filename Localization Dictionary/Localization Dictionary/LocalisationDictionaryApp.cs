@@ -188,6 +188,9 @@ namespace Localization_Dictionary
 				Console.WriteLine(
 					"\nA: add new key" +
 					"\nC: change translation word" +
+                    "\nK: find line with key" +
+                    "\nW: find line with subword" +
+                    "\nS: sort dictionary with given language" +
 					"\nQ: quit");
 				choice = Console.ReadLine();
 				if (String.IsNullOrEmpty(choice)) continue;
@@ -261,6 +264,47 @@ namespace Localization_Dictionary
 							locDictionary.ChangeTranslation(newKey, curLang, curWord);
 							break;
 
+						case "K":
+						case "k":
+							string key = "";
+							Console.Clear();
+							do
+							{
+								Console.Write($"enter key (any letter to stop):> {key}");
+								key += Console.ReadKey().KeyChar;
+								Console.Clear();
+								if(Int32.TryParse(key, out int intkey))
+									locDictionary.Show(intkey);
+                                else break;
+							} while (key.LastOrDefault() != '\n');
+							break;
+
+						case "W":
+						case "w":
+							string word = "";
+							Console.Clear();
+							locDictionary.Show();
+							do
+							{
+								Console.Write($"enter word (any digit to stop):> {word}");
+								word += Console.ReadKey().KeyChar;
+								Console.Clear();
+								locDictionary.Show(word);
+							} while (!Int32.TryParse(word.LastOrDefault().ToString(), out _));
+							break;
+
+						case "s":
+						case "S":
+							Console.WriteLine("enter language you want to sort with: ");
+							choice = Console.ReadLine();
+							if(string.IsNullOrEmpty(choice))
+                            {
+								ConsoleColor.WriteError("string is empty");
+								break;
+                            }
+							locDictionary.OrderByLanguage(choice);
+							break;
+
 						case "q":
 						case "Q":
 							flag = false;
@@ -278,30 +322,30 @@ namespace Localization_Dictionary
 			ConsoleColor.SetOddColoumn();
 			Console.Clear();
 
-			LocDictionary dictionary1 = new LocDictionary(new HashSet<string> { "russian" });
-			dictionary1.AddKey(0, new List<string> { "вода" });
-			dictionary1.AddKey(1, new List<string> { "огонь" });
-			dictionary1.AddKey(2, new List<string> { "земля" });
-			dictionary1.AddKey(3, new List<string> { "воздух" });
-			dictionary1.AddKey(4, new List<string> { "яблоко" });
-			dictionary1.AddKey(5, new List<string> { "аппельсин" });
-			dictionary1.AddKey(6, new List<string> { "желтый" });
-			dictionary1.AddKey(7, new List<string> { "синий" });
-			dictionary1.AddKey(8, new List<string> { "зеленый" });
-			dictionary1.AddKey(9, new List<string> { "красный" });
+			LocDictionary dictionary1 = new LocDictionary(new HashSet<string> { "russian", "spanish" });
+			dictionary1.AddKey(0, new List<string> { "вода"		, "agua" });
+			dictionary1.AddKey(1, new List<string> { "огонь"	, "fuego" });
+			dictionary1.AddKey(2, new List<string> { "земля"	, "suelo" });
+			dictionary1.AddKey(3, new List<string> { "воздух"	, "aire" });
+			dictionary1.AddKey(4, new List<string> { "яблоко"	, "manzana" });
+			dictionary1.AddKey(5, new List<string> { "апельсин" , "naranja" });
+			dictionary1.AddKey(6, new List<string> { "желтый"	, "amarillo" });
+			dictionary1.AddKey(7, new List<string> { "синий"	, "azul" });
+			dictionary1.AddKey(8, new List<string> { "зеленый"	, "verde" });
+			dictionary1.AddKey(9, new List<string> { "красный"  , "rojo" });
 			dictionaries.Add(dictionary1);
 
-			LocDictionary dictionary2 = new LocDictionary(new HashSet<string> { "english" });
-			dictionary2.AddKey(0, new List<string> { "whater" });
-			dictionary2.AddKey(1, new List<string> { "fire" });
-			dictionary2.AddKey(2, new List<string> { "ground" });
-			dictionary2.AddKey(3, new List<string> { "air" });
-			dictionary2.AddKey(4, new List<string> { "apple" });
-			dictionary2.AddKey(5, new List<string> { "orange" });
-			dictionary2.AddKey(6, new List<string> { "yellow" });
-			dictionary2.AddKey(7, new List<string> { "blue" });
-			dictionary2.AddKey(8, new List<string> { "green" });
-			dictionary2.AddKey(10, new List<string> { "purple" });
+			LocDictionary dictionary2 = new LocDictionary(new HashSet<string> { "english", "french" });
+			dictionary2.AddKey(0, new List<string> { "water"	, "eau" });
+			dictionary2.AddKey(1, new List<string> { "fire"		, "feu" });
+			dictionary2.AddKey(2, new List<string> { "ground"	, "terrain" });
+			dictionary2.AddKey(3, new List<string> { "air"		, "air" });
+			dictionary2.AddKey(4, new List<string> { "apple"	, "pomme" });
+			dictionary2.AddKey(5, new List<string> { "orange"	, "orange" });
+			dictionary2.AddKey(6, new List<string> { "yellow"	, "jaune" });
+			dictionary2.AddKey(7, new List<string> { "blue"		, "bleu" });
+			dictionary2.AddKey(8, new List<string> { "green"	, "vert" });
+			dictionary2.AddKey(10, new List<string> { "purple"	, "violet" });
 			dictionaries.Add(dictionary2);
 
 			ManyDicsMenu();

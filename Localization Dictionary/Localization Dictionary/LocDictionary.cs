@@ -336,7 +336,8 @@ namespace Localization_Dictionary
         /// <param name="language">name of language</param>
         public void OrderByLanguage(string language)
         {
-            OrderByLanguage(languages.ToList().FindLastIndex(n => n == language));
+            if(languages.Contains(language))
+                OrderByLanguage(languages.ToList().FindLastIndex(n => n == language));
         }
 
         /// <summary>
