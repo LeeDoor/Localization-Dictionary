@@ -23,6 +23,13 @@ namespace Localization_Dictionary
         /// i used hashset, because you cant add 2 same languages
         /// </summary>
         private HashSet<string> languages = new HashSet<string>();
+        public HashSet<string> Languages
+        {
+            get
+            {
+                return languages;
+            }
+        }
 
         /// <summary>
         /// parametrical constructor
@@ -67,7 +74,7 @@ namespace Localization_Dictionary
                 }
                 else if (value.Count < languages.Count)
                 {
-                    ConsoleColor.WriteError("not enough words in word list. needed words will be added");
+                    ConsoleColor.WriteError("too much words in word list. needed words will be added");
                     while (value.Count != languages.Count)
                     {
                         value.Add("empty");
@@ -190,20 +197,7 @@ namespace Localization_Dictionary
             Console.WriteLine();
         }
 
-        /// <summary>
-        /// prints size in chars of the longest word in coloumn
-        /// </summary>
-        /// <param name="language">language of given coloumn</param>
-        /// <returns></returns>
-        private int GetMaxWordSize(int coloumn)
-        {
-            int maxTranslationWord = dictionary.Max(n => n.Value[coloumn].Length);
-            if (maxTranslationWord > languages.ElementAt(coloumn).Length)
-            {
-                return maxTranslationWord;
-            }
-            return languages.ElementAt(coloumn).Length;
-        }
+        
 
         /// <summary>
         /// changes one translation word of key
@@ -217,9 +211,27 @@ namespace Localization_Dictionary
                 || newWord == null
                 || !dictionary.ContainsKey(key)
                 || !languages.Contains(language))
+            {
+                ConsoleColor.WriteError("Wrong enter");
                 return;
+            }
 
             dictionary[key][languages.ToList().FindLastIndex(n => n == language)] = newWord;
+        }
+
+        /// <summary>
+        /// prints size in chars of the longest word in coloumn
+        /// </summary>
+        /// <param name="coloumn">id of given coloumn</param>
+        /// <returns></returns>
+        private int GetMaxWordSize(int coloumn)
+        {
+            int maxTranslationWord = dictionary.Max(n => n.Value[coloumn].Length);
+            if (maxTranslationWord > languages.ElementAt(coloumn).Length)
+            {
+                return maxTranslationWord;
+            }
+            return languages.ElementAt(coloumn).Length;
         }
 
         /// <summary>
@@ -230,8 +242,11 @@ namespace Localization_Dictionary
         private int GetMaxWordSize(string language)
         {
             int languageId = languages.ToList().FindLastIndex(n => n == language);
-            int maxTranslationWord = dictionary.Max(n => n.Value[languageId].Length);
+            int maxTranslationWord = 0;
+            if (dictionary.Count != 0) 
+                maxTranslationWord = dictionary.Max(n => n.Value[languageId].Length);
             int languageLength = languages.ElementAt(languageId).Length;
+
             if (maxTranslationWord > languageLength)
             {
                 return maxTranslationWord;
@@ -245,7 +260,7 @@ namespace Localization_Dictionary
         /// <param name="h1">first list of languages</param>
         /// <param name="h2">second list of languages</param>
         /// <returns>returns connected languages</returns>
-        private static HashSet<string> CompareLanguages(HashSet<string> h1, HashSet<string> h2)
+        private static HashSet<string> ConnectLanguages(HashSet<string> h1, HashSet<string> h2)
         {
 
             HashSet<string> newLangs = new HashSet<string>();
@@ -268,7 +283,7 @@ namespace Localization_Dictionary
         /// <returns>returns connected dictionary</returns>
         public static LocDictionary operator + (LocDictionary dic1, LocDictionary dic2)
         {
-            HashSet<string> newLangs = CompareLanguages(dic1.languages, dic2.languages);
+            HashSet<string> newLangs = ConnectLanguages(dic1.languages, dic2.languages);
 
             LocDictionary res = new LocDictionary(newLangs);
 
