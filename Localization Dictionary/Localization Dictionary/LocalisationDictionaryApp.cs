@@ -45,6 +45,7 @@ namespace Localization_Dictionary
 					"\nS: show all dictionaries" +
 					"\nA: add new dictionary" +
 					"\nC: change concrete dictionary" +
+					"\nD: delete dictionary" +
 					"\nO: connect two dictionaries");
 				choice = Console.ReadLine();
 				if (String.IsNullOrEmpty(choice)) continue;
@@ -140,6 +141,33 @@ namespace Localization_Dictionary
 							break;
 						}
                         dictionaries.Add(dictionaries[id1] + dictionaries[id2]);
+						break;
+
+					case "D":
+					case "d":
+						Console.WriteLine("enter id of dictionary you want to remove: ");
+						choice = Console.ReadLine();
+
+						if (string.IsNullOrEmpty(choice))
+						{
+							ConsoleColor.WriteError("string is empty");
+							break;
+						}
+						if (Int32.TryParse(choice, out int id))
+						{
+							if (!(0 <= id && id < dictionaries.Count))
+							{
+								ConsoleColor.WriteError("you dont have dictionary with this id");
+								break;
+							}
+						}
+						else
+						{
+							ConsoleColor.WriteError("it is not int");
+							break;
+						}
+
+                        dictionaries.Remove(dictionaries[id]);
 						break;
 				}
 				Console.WriteLine("press any key to continue...");

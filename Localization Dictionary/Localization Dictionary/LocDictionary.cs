@@ -49,6 +49,8 @@ namespace Localization_Dictionary
         /// <param name="value">list of words</param>
         public void AddKey(int key, List<string> value)
         {
+            var Newvalue = new List<string>(value);
+
             // dublicate key check
             if (dictionary.ContainsKey(key))
             {
@@ -56,32 +58,32 @@ namespace Localization_Dictionary
                 return;
             }
             // null value check
-            if (value == null)
+            if (Newvalue == null)
             {
                 ConsoleColor.WriteError("value is null!");
                 return;
             }
             // wrong value length
-            if (value.Count != languages.Count)
+            if (Newvalue.Count != languages.Count)
             {
-                if (value.Count > languages.Count)
+                if (Newvalue.Count > languages.Count)
                 {
                     ConsoleColor.WriteError("not enough words in word list. exess words will be removed");
-                    while (value.Count != languages.Count)
+                    while (Newvalue.Count != languages.Count)
                     {
-                        value.Remove(value.Last());
+                        Newvalue.Remove(value.Last());
                     }
                 }
-                else if (value.Count < languages.Count)
+                else if (Newvalue.Count < languages.Count)
                 {
                     ConsoleColor.WriteError("too much words in word list. needed words will be added");
-                    while (value.Count != languages.Count)
+                    while (Newvalue.Count != languages.Count)
                     {
-                        value.Add("empty");
+                        Newvalue.Add("empty");
                     }
                 }
             }
-            dictionary.Add(key, value);
+            dictionary.Add(key, Newvalue);
         }
 
         /// <summary>
