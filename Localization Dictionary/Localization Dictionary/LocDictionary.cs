@@ -199,8 +199,6 @@ namespace Localization_Dictionary
             Console.WriteLine();
         }
 
-        
-
         /// <summary>
         /// changes one translation word of key
         /// </summary>
@@ -222,10 +220,10 @@ namespace Localization_Dictionary
         }
 
         /// <summary>
-        /// prints size in chars of the longest word in coloumn
+        /// gets size in chars of the longest word in coloumn. used to beautifully show table
         /// </summary>
         /// <param name="coloumn">id of given coloumn</param>
-        /// <returns></returns>
+        /// <returns>size of the longest word in coloumn. it can be translation word or language name</returns>
         private int GetMaxWordSize(int coloumn)
         {
             int maxTranslationWord = dictionary.Max(n => n.Value[coloumn].Length);
